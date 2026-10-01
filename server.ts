@@ -360,8 +360,19 @@ export async function createExpressApp() {
     }
   });
 
-  // Get full state (for fast client hydration)
-  apiRouter.get('/state', (req, res) => {
+  // Get full state (guarantees live consistency across all serverless instances)
+  apiRouter.get('/state', async (req, res) => {
+    if (isMongoActive()) {
+      try {
+        const remote = await pullAllFromMongo();
+        if (remote && remote.products && remote.products.length > 0) {
+          db = remote;
+        }
+      } catch (e) {
+        // fallback to memory
+      }
+    }
+
     res.json({
       products: db.products,
       users: db.users.map((u) => {

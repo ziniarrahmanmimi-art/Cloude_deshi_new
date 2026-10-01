@@ -114,7 +114,7 @@
       "wholesalePriceKg": null,
       "wholesalePricePcs": 8,
       "stockKg": 0,
-      "stockPcs": 190,
+      "stockPcs": 180,
       "lowStockThresholdKg": 0.5,
       "lowStockThresholdPcs": 20,
       "active": true
@@ -184,9 +184,9 @@
       "passwordHash": "123456",
       "role": "AGENT",
       "status": "ACTIVE",
-      "totalSales": 650,
+      "totalSales": 750,
       "totalPaid": 0,
-      "currentDue": 650,
+      "currentDue": 750,
       "address": "",
       "joinedDate": "17 September 2026"
     },
@@ -205,6 +205,33 @@
     }
   ],
   "sales": [
+    {
+      "id": "SALE-1790872891826-4",
+      "invoiceNo": "DB-20261001-00004",
+      "agentId": "AGENT-0003",
+      "agentName": "Toha Jamil",
+      "customerName": "Direct Customer",
+      "customerPhone": "",
+      "customerAddress": "",
+      "saleType": "RETAIL",
+      "items": [
+        {
+          "productId": "PROD-1009",
+          "productName": "Frozen Roti",
+          "unit": "PCS",
+          "quantity": 10,
+          "unitPrice": 10,
+          "subtotal": 100
+        }
+      ],
+      "subtotal": 100,
+      "discount": 0,
+      "grandTotal": 100,
+      "paymentStatus": "UNPAID",
+      "createdAtDate": "1 October 2026",
+      "createdAtTime": "10:41 PM",
+      "timestamp": 1790872891247
+    },
     {
       "id": "SALE-1790871405643-3",
       "invoiceNo": "DB-20261001-00003",
@@ -288,6 +315,23 @@
     }
   ],
   "stockTransactions": [
+    {
+      "id": "STX-SALE-1790872891826-4-0",
+      "productId": "PROD-1009",
+      "productName": "Frozen Roti",
+      "type": "SALE_OUT",
+      "quantity": 10,
+      "unit": "PCS",
+      "referenceNote": "Deducted via Sale DB-20261001-00004",
+      "recordedBy": "Toha Jamil",
+      "date": "1 October 2026",
+      "time": "10:41 PM",
+      "createdAtDate": "1 October 2026",
+      "createdAtTime": "10:41 PM",
+      "timestamp": 1790872891247,
+      "stockBefore": 190,
+      "stockAfter": 180
+    },
     {
       "id": "STX-SALE-1790871405643-3-0",
       "productId": "PROD-1010",
@@ -468,6 +512,17 @@
     }
   ],
   "logs": [
+    {
+      "id": "LOG-1790872891248",
+      "user": "Toha Jamil",
+      "role": "AGENT",
+      "action": "Sale Created",
+      "referenceId": "DB-20261001-00004",
+      "details": "Sold 1 items to Direct Customer for ৳100. Added to Agent Due.",
+      "date": "1 October 2026",
+      "time": "10:41 PM",
+      "timestamp": 1790872891247
+    },
     {
       "id": "LOG-1790871405330",
       "user": "Toha Jamil",

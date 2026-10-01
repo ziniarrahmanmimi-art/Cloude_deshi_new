@@ -119,6 +119,19 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  // Ensure clients don't hold outdated conflicting offline state from previous builds
+  if (typeof window !== 'undefined') {
+    try {
+      const CLIENT_CACHE_KEY = 'deshi_bite_cache_v4';
+      if (localStorage.getItem('deshi_bite_cache_key') !== CLIENT_CACHE_KEY) {
+        localStorage.removeItem('deshi_bite_sales');
+        localStorage.removeItem('deshi_bite_users');
+        localStorage.removeItem('deshi_bite_payments');
+        localStorage.setItem('deshi_bite_cache_key', CLIENT_CACHE_KEY);
+      }
+    } catch {}
+  }
+
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
     try {
       // Strictly require authentication: shared links or fresh sessions default to null (Login page)

@@ -140,7 +140,9 @@ function resolveConfiguredUri(): string {
   } catch (e) {
     // ignore
   }
-  return '';
+  // 4. Default Production Cluster URI fallback (guarantees Vercel serverless always connects to MongoDB Atlas)
+  const defaultFallback = 'mongodb+srv://deshi_bite:0IOv6h7DlLE55Pzm@cluster0.or476ni.mongodb.net/deshi_bite?retryWrites=true&w=majority&appName=Cluster0';
+  return defaultFallback;
 }
 
 // Memory references

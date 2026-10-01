@@ -95,10 +95,11 @@ export const StatCards: React.FC = () => {
 
   // Due calculation: accurate and resilient across agents
   const getAgentDue = (u: User) => {
-    if (typeof u.currentDue === 'number' && u.currentDue > 0) return u.currentDue;
     const agentSalesTotal = sales.filter((s) => s.agentId === u.id).reduce((sum, s) => sum + s.grandTotal, 0);
     const agentPaymentsTotal = (u.totalPaid || 0) || (payments.filter((p) => p.agentId === u.id).reduce((sum, p) => sum + p.amount, 0));
-    return agentSalesTotal - agentPaymentsTotal;
+    const ledgerDue = agentSalesTotal - agentPaymentsTotal;
+    if (typeof u.currentDue === 'number' && u.currentDue > ledgerDue) return u.currentDue;
+    return ledgerDue;
   };
 
   const totalDueAcrossAgents = users
