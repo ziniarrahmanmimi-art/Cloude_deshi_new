@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { Sale, isProductLowStock } from '../types';
+import { Sale, isProductLowStock, User } from '../types';
 import {
   getBangladeshWeekDays,
   getDhakaYMD,
@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 
 export const StatCards: React.FC = () => {
-  const { currentUser, sales, products, users } = useApp();
+  const { currentUser, sales, products, users, payments } = useApp();
   const isAdmin = currentUser?.role === 'ADMIN';
 
   // Live timer state: automatically refreshes at midnight, at weekly reset (Saturday),
@@ -93,12 +93,19 @@ export const StatCards: React.FC = () => {
   // Total Lifetime Sales
   const totalSales = relevantSales.reduce((acc, s) => acc + s.grandTotal, 0);
 
-  // Due calculation
+  // Due calculation: accurate and resilient across agents
+  const getAgentDue = (u: User) => {
+    if (typeof u.currentDue === 'number' && u.currentDue > 0) return u.currentDue;
+    const agentSalesTotal = sales.filter((s) => s.agentId === u.id).reduce((sum, s) => sum + s.grandTotal, 0);
+    const agentPaymentsTotal = (u.totalPaid || 0) || (payments.filter((p) => p.agentId === u.id).reduce((sum, p) => sum + p.amount, 0));
+    return agentSalesTotal - agentPaymentsTotal;
+  };
+
   const totalDueAcrossAgents = users
     .filter((u) => u.role === 'AGENT')
-    .reduce((acc, u) => acc + u.currentDue, 0);
+    .reduce((acc, u) => acc + getAgentDue(u), 0);
 
-  const agentPersonalDue = currentUser?.currentDue || 0;
+  const agentPersonalDue = currentUser ? getAgentDue(currentUser) : 0;
 
   // Products stock status
   const lowStockCount = products.filter(isProductLowStock).length;

@@ -7,15 +7,24 @@ export const DueView: React.FC = () => {
     currentUser,
     users,
     payments,
+    sales,
     setIsPaymentModalOpen,
     setSelectedAgentForPayment,
   } = useApp();
 
   const isAdmin = currentUser?.role === 'ADMIN';
 
+  // Resilient due calculation
+  const getAgentDue = (u: any) => {
+    if (typeof u.currentDue === 'number' && u.currentDue > 0) return u.currentDue;
+    const agentSalesTotal = sales.filter((s) => s.agentId === u.id).reduce((sum, s) => sum + s.grandTotal, 0);
+    const agentPaymentsTotal = (u.totalPaid || 0) || (payments.filter((p) => p.agentId === u.id).reduce((sum, p) => sum + p.amount, 0));
+    return agentSalesTotal - agentPaymentsTotal;
+  };
+
   // Calculations
   const agentUsers = users.filter((u) => u.role === 'AGENT');
-  const totalSystemDue = agentUsers.reduce((acc, u) => acc + u.currentDue, 0);
+  const totalSystemDue = agentUsers.reduce((acc, u) => acc + getAgentDue(u), 0);
   const totalClearedPayments = payments.reduce((acc, p) => acc + p.amount, 0);
 
   // Relevant payments

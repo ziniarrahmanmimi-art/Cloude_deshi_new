@@ -347,78 +347,34 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (res.ok) {
         const data = await res.json();
 
-        // 1. Products merge: Never overwrite user-added products
-        setProducts((prev) => {
-          const map = new Map<string, Product>();
-          (data.products || []).forEach((p: Product) => map.set(p.id, p));
-          prev.forEach((p) => {
-            if (!map.has(p.id)) map.set(p.id, p);
-          });
-          const merged = Array.from(map.values());
-          try {
-            localStorage.setItem('deshi_bite_products', JSON.stringify(merged));
-          } catch {}
-          return merged;
-        });
-
-        // 2. Sales merge
-        setSales((prev) => {
-          const map = new Map<string, Sale>();
-          (data.sales || []).forEach((s: Sale) => map.set(s.id, s));
-          prev.forEach((s) => {
-            if (!map.has(s.id)) map.set(s.id, s);
-          });
-          const merged = Array.from(map.values());
-          try {
-            localStorage.setItem('deshi_bite_sales', JSON.stringify(merged));
-          } catch {}
-          return merged;
-        });
-
-        // 3. Users merge
-        setUsers((prev) => {
-          const map = new Map<string, User>();
-          (data.users || []).forEach((u: User) => map.set(u.id, u));
-          prev.forEach((u) => {
-            if (!map.has(u.id)) map.set(u.id, u);
-          });
-          const merged = Array.from(map.values());
-          try {
-            localStorage.setItem('deshi_bite_users', JSON.stringify(merged));
-          } catch {}
-          return merged;
-        });
-
-        // 4. Stock Transactions merge
-        if (Array.isArray(data.stockTransactions)) {
-          setStockTransactions((prev) => {
-            const map = new Map<string, StockTransaction>();
-            data.stockTransactions.forEach((tx: StockTransaction) => map.set(tx.id, tx));
-            prev.forEach((tx) => {
-              if (!map.has(tx.id)) map.set(tx.id, tx);
-            });
-            const merged = Array.from(map.values());
-            try {
-              localStorage.setItem('deshi_bite_stock_tx', JSON.stringify(merged));
-            } catch {}
-            return merged;
-          });
+        // 1. Products: Authoritative server state
+        if (Array.isArray(data.products) && data.products.length > 0) {
+          setProducts(data.products);
+          try { localStorage.setItem('deshi_bite_products', JSON.stringify(data.products)); } catch {}
         }
 
-        // 5. Payments merge
+        // 2. Sales: Authoritative server state
+        if (Array.isArray(data.sales)) {
+          setSales(data.sales);
+          try { localStorage.setItem('deshi_bite_sales', JSON.stringify(data.sales)); } catch {}
+        }
+
+        // 3. Users: Authoritative server state
+        if (Array.isArray(data.users) && data.users.length > 0) {
+          setUsers(data.users);
+          try { localStorage.setItem('deshi_bite_users', JSON.stringify(data.users)); } catch {}
+        }
+
+        // 4. Stock Transactions: Authoritative server state
+        if (Array.isArray(data.stockTransactions)) {
+          setStockTransactions(data.stockTransactions);
+          try { localStorage.setItem('deshi_bite_stock_tx', JSON.stringify(data.stockTransactions)); } catch {}
+        }
+
+        // 5. Payments: Authoritative server state
         if (Array.isArray(data.payments)) {
-          setPayments((prev) => {
-            const map = new Map<string, PaymentRecord>();
-            data.payments.forEach((p: PaymentRecord) => map.set(p.id, p));
-            prev.forEach((p) => {
-              if (!map.has(p.id)) map.set(p.id, p);
-            });
-            const merged = Array.from(map.values());
-            try {
-              localStorage.setItem('deshi_bite_payments', JSON.stringify(merged));
-            } catch {}
-            return merged;
-          });
+          setPayments(data.payments);
+          try { localStorage.setItem('deshi_bite_payments', JSON.stringify(data.payments)); } catch {}
         }
 
         if (data.settings) {

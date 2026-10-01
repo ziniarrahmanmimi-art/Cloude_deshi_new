@@ -96,88 +96,34 @@ function loadDatabase(): DatabaseSchema {
     return initialDb;
   }
 
-  // Purge any rejected agents and the other 2 agents (Rahim Ahmed, Karim Mollah)
   if (loaded.users) {
-    loaded.users = loaded.users.filter(
-      (u) => u.status !== 'REJECTED' && u.name !== 'Rahim Ahmed' && u.name !== 'Karim Mollah'
-    );
-    // Ensure Toha Jamil has zero sales and zero due
-    loaded.users.forEach((u) => {
-      if (u.name === 'Toha Jamil') {
-        u.totalSales = 0;
-        u.totalPaid = 0;
-        u.currentDue = 0;
-        u.status = 'ACTIVE';
-      }
-    });
+    loaded.users = loaded.users.filter((u) => u.status !== 'REJECTED');
   }
+  if (!Array.isArray(loaded.sales)) loaded.sales = [];
+  if (!Array.isArray(loaded.payments)) loaded.payments = [];
+  if (!Array.isArray(loaded.products)) loaded.products = INITIAL_PRODUCTS;
+  if (!Array.isArray(loaded.stockTransactions)) loaded.stockTransactions = [];
+  if (!Array.isArray(loaded.notifications)) loaded.notifications = [];
+  if (!Array.isArray(loaded.logs)) loaded.logs = [];
 
-  // Clear sales and payments so total sell is zero and total due is zero
-  loaded.sales = [];
-  loaded.payments = [];
-
-  // Clean stock transactions from sales and clear pre-existing seed stock in records
-  if (loaded.stockTransactions) {
-    loaded.stockTransactions = loaded.stockTransactions.filter(
-      (tx) => tx.type !== 'SALE' && tx.type !== 'SALE_OUT' && !tx.id.startsWith('STX-20260914') && !tx.id.startsWith('STX-20260915')
-    );
-  }
-
-  // Clean any pending registration notifications
-  if (loaded.notifications) {
-    loaded.notifications = loaded.notifications.filter(
-      (n) => !n.title.includes('Registration Pending')
-    );
-  }
-
-  // Ensure default low stock alert for KG is 0.5 instead of 5
-  if (loaded.products) {
-    loaded.products.forEach((p) => {
-      if (p.lowStockThresholdKg === 5) {
-        p.lowStockThresholdKg = 0.5;
-      }
-    });
-  }
-
-  if (loaded.settings && (loaded.settings.lowStockDefaultKg === 5 || !loaded.settings.lowStockDefaultKg)) {
-    loaded.settings.lowStockDefaultKg = 0.5;
-  }
-
-  // Ensure payment dates are populated
-  if (loaded.payments) {
-    loaded.payments.forEach((p) => {
-      if (!p.createdAtDate && p.date) p.createdAtDate = p.date;
-      if (!p.createdAtTime && p.time) p.createdAtTime = p.time;
-      if (!p.date && p.createdAtDate) p.date = p.createdAtDate;
-      if (!p.time && p.createdAtTime) p.time = p.createdAtTime;
-    });
-  }
-
-  // Ensure stock transaction dates are populated
-  if (loaded.stockTransactions) {
-    loaded.stockTransactions.forEach((tx) => {
-      if (!tx.createdAtDate && tx.date) tx.createdAtDate = tx.date;
-      if (!tx.createdAtTime && tx.time) tx.createdAtTime = tx.time;
-      if (!tx.date && tx.createdAtDate) tx.date = tx.createdAtDate;
-      if (!tx.time && tx.createdAtTime) tx.time = tx.createdAtTime;
-    });
-  }
-
-  saveDatabase(loaded);
   return loaded;
 }
 
-function saveDatabase(newDb: DatabaseSchema) {
+async function saveDatabase(newDb: DatabaseSchema): Promise<void> {
   try {
     fs.writeFileSync(DB_FILE, JSON.stringify(newDb, null, 2), 'utf-8');
   } catch (err) {
     console.error('Failed to write db file:', err);
   }
 
-  // Asynchronously synchronize all records to MongoDB Cloud Atlas
-  syncToMongo(async () => {
-    await pushAllToMongo(newDb);
-  });
+  // Persist directly to MongoDB Atlas Cloud
+  if (isMongoActive()) {
+    try {
+      await pushAllToMongo(newDb);
+    } catch (err) {
+      console.warn('[MongoDB Sync Notice]:', err);
+    }
+  }
 }
 
 let db = loadDatabase();

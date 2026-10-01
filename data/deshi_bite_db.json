@@ -126,7 +126,7 @@
       "retailPricePcs": null,
       "wholesalePriceKg": 370,
       "wholesalePricePcs": null,
-      "stockKg": 4,
+      "stockKg": 3.75,
       "stockPcs": 0,
       "lowStockThresholdKg": 0.5,
       "lowStockThresholdPcs": 10,
@@ -184,9 +184,9 @@
       "passwordHash": "123456",
       "role": "AGENT",
       "status": "ACTIVE",
-      "totalSales": 550,
+      "totalSales": 650,
       "totalPaid": 0,
-      "currentDue": 550,
+      "currentDue": 650,
       "address": "",
       "joinedDate": "17 September 2026"
     },
@@ -205,6 +205,33 @@
     }
   ],
   "sales": [
+    {
+      "id": "SALE-1790871405643-3",
+      "invoiceNo": "DB-20261001-00003",
+      "agentId": "AGENT-0003",
+      "agentName": "Toha Jamil",
+      "customerName": "Direct Customer",
+      "customerPhone": "",
+      "customerAddress": "",
+      "saleType": "RETAIL",
+      "items": [
+        {
+          "productId": "PROD-1010",
+          "productName": "Kolija Singara",
+          "unit": "KG",
+          "quantity": 0.25,
+          "unitPrice": 400,
+          "subtotal": 100
+        }
+      ],
+      "subtotal": 100,
+      "discount": 0,
+      "grandTotal": 100,
+      "paymentStatus": "UNPAID",
+      "createdAtDate": "1 October 2026",
+      "createdAtTime": "10:16 PM",
+      "timestamp": 1790871405329
+    },
     {
       "id": "SALE-1790870738529-2",
       "invoiceNo": "DB-20261001-00002",
@@ -261,6 +288,23 @@
     }
   ],
   "stockTransactions": [
+    {
+      "id": "STX-SALE-1790871405643-3-0",
+      "productId": "PROD-1010",
+      "productName": "Kolija Singara",
+      "type": "SALE_OUT",
+      "quantity": 0.25,
+      "unit": "KG",
+      "referenceNote": "Deducted via Sale DB-20261001-00003",
+      "recordedBy": "Toha Jamil",
+      "date": "1 October 2026",
+      "time": "10:16 PM",
+      "createdAtDate": "1 October 2026",
+      "createdAtTime": "10:16 PM",
+      "timestamp": 1790871405329,
+      "stockBefore": 4,
+      "stockAfter": 3.75
+    },
     {
       "id": "STX-SALE-1790870738529-2-0",
       "productId": "PROD-1008",
@@ -424,6 +468,17 @@
     }
   ],
   "logs": [
+    {
+      "id": "LOG-1790871405330",
+      "user": "Toha Jamil",
+      "role": "AGENT",
+      "action": "Sale Created",
+      "referenceId": "DB-20261001-00003",
+      "details": "Sold 1 items to Direct Customer for ৳100. Added to Agent Due.",
+      "date": "1 October 2026",
+      "time": "10:16 PM",
+      "timestamp": 1790871405329
+    },
     {
       "id": "LOG-1790870738409",
       "user": "Nahid",
