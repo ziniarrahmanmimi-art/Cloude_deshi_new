@@ -272,19 +272,30 @@ export async function createExpressApp() {
 
   const IS_SERVERLESS = Boolean(process.env.VERCEL || process.env.NOW_REGION);
 
+  let lastMongoSyncTime = 0;
+  const SYNC_CACHE_TTL_MS = 30_000; // 30 seconds cache TTL for full database pull
+
   // Make sure this instance has connected to MongoDB and holds the latest data.
   // Returns true when MongoDB is the active source of truth.
-  async function syncFromMongo(): Promise<boolean> {
+  async function syncFromMongo(force = false): Promise<boolean> {
+    const now = Date.now();
+    if (!force && lastMongoSyncTime > 0 && db && db.products && db.products.length > 0 && (now - lastMongoSyncTime) < SYNC_CACHE_TTL_MS) {
+      return isMongoActive();
+    }
+
     const mongoRes = await connectMongo();
     if (!mongoRes.success) {
-      console.log(`[MongoDB] Status: ${mongoRes.message}`);
       return false;
     }
+
     const remoteData = await pullAllFromMongo();
     if (remoteData && remoteData.products.length > 0) {
       db = remoteData;
+      lastMongoSyncTime = Date.now();
+      saveDatabase(db);
     } else {
       await pushAllToMongo(db);
+      lastMongoSyncTime = Date.now();
       console.log('[MongoDB] Pushed initial dataset to MongoDB Atlas Cloud');
     }
     return true;
@@ -296,54 +307,35 @@ export async function createExpressApp() {
       console.warn('[MongoDB] Startup connection notice:', err?.message || err);
     });
   } else {
-    // Serverless (Vercel): every instance is short-lived and instances do not share memory,
-    // so MongoDB must be the source of truth. Handle one request at a time per instance,
-    // load fresh data BEFORE the route runs, and save BEFORE the response is sent.
-    let queue: Promise<void> = Promise.resolve();
-    app.use((req, res, next) => {
+    // Optimized Serverless middleware for Vercel:
+    // 1. Cold start: connect to MongoDB and hydrate cache once.
+    // 2. Read & Auth requests (/auth/login, /state, etc.) respond IMMEDIATELY without lag!
+    // 3. Mutation requests update memory immediately and sync to MongoDB in parallel without blocking user UI!
+    app.use(async (req, res, next) => {
       const p = req.path.replace(/^\/api/, '');
       if (p === '/health' || p.startsWith('/mongodb/')) return next();
 
-      const turn = queue;
-      let release!: () => void;
-      queue = new Promise<void>((r) => (release = r));
-      let released = false;
-      const doRelease = () => {
-        if (!released) {
-          released = true;
-          release();
+      // Ensure cold-start hydration happens once per instance
+      if (lastMongoSyncTime === 0) {
+        await syncFromMongo().catch((e) => {
+          console.warn('[MongoDB] Cold start sync notice:', e?.message || e);
+        });
+      }
+
+      // Fast path for Auth & Read requests: respond immediately!
+      if (req.method === 'GET' || p === '/auth/login' || p === '/auth/register') {
+        return next();
+      }
+
+      // For mutation requests (POST/PUT/DELETE):
+      // Asynchronously sync to MongoDB when the response completes without blocking the user
+      res.on('finish', () => {
+        if (isMongoActive()) {
+          pushAllToMongo(db).catch((e) => console.warn('[MongoDB] background sync error:', e?.message || e));
         }
-      };
-      res.on('finish', doRelease);
-      res.on('close', doRelease);
+      });
 
-      turn
-        .then(async () => {
-          const active = await syncFromMongo().catch((e) => {
-            console.warn('[MongoDB] sync error:', e?.message || e);
-            return false;
-          });
-
-          if (!active && req.method !== 'GET' && p !== '/auth/login') {
-            return res.status(503).json({
-              error: 'Database not connected. Add MONGODB_URI in Vercel > Settings > Environment Variables, allow 0.0.0.0/0 in MongoDB Atlas Network Access, then redeploy.',
-              success: false,
-            });
-          }
-
-          if (active && req.method !== 'GET') {
-            // persist everything to MongoDB before the response goes out
-            const origEnd = res.end.bind(res) as any;
-            (res as any).end = (...args: any[]) => {
-              pushAllToMongo(db)
-                .catch((e) => console.warn('[MongoDB] save error:', e?.message || e))
-                .finally(() => origEnd(...args));
-              return res;
-            };
-          }
-          next();
-        })
-        .catch(next);
+      next();
     });
   }
 

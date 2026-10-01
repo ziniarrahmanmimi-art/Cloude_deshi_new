@@ -185,14 +185,9 @@ export async function connectMongo(customUri?: string): Promise<{ success: boole
     DB_NAME = extractedDb;
   }
 
-  // Reuse existing healthy connection if already connected to this URI
+  // Reuse existing healthy connection without blocking on ping!
   if (isConnected && client && db && uriToUse === activeUri) {
-    try {
-      await db.command({ ping: 1 });
-      return { success: true, message: `Connected to MongoDB database "${db.databaseName}" (cached)` };
-    } catch {
-      // Connection might be stale, proceed to reconnect
-    }
+    return { success: true, message: `Connected to MongoDB database "${db.databaseName}" (cached)` };
   }
 
   try {
@@ -226,15 +221,15 @@ export async function connectMongo(customUri?: string): Promise<{ success: boole
     
     // Connect with optimized options for cloud environments and serverless (Vercel, container)
     client = new MongoClient(uriToUse, {
-      serverSelectionTimeoutMS: 8000,
-      connectTimeoutMS: 8000,
+      serverSelectionTimeoutMS: 4000,
+      connectTimeoutMS: 4000,
+      maxPoolSize: 10,
+      minPoolSize: 0,
       retryWrites: true,
       tls: true,
     });
 
     await client.connect();
-    // Ping database
-    await client.db(targetDbName).command({ ping: 1 });
 
     db = client.db(targetDbName);
     DB_NAME = targetDbName;
@@ -325,40 +320,55 @@ export async function getMongoStatus(): Promise<MongoStatus> {
 async function syncCollection(name: string, docs: any[]) {
   if (!db) return;
   const ids = docs.map((d) => d.id);
+  const tasks: Promise<any>[] = [];
   if (docs.length > 0) {
-    await db.collection(name).bulkWrite(
-      docs.map((d) => ({
-        replaceOne: { filter: { id: d.id }, replacement: { ...d, _id: d.id as any }, upsert: true },
-      }))
+    tasks.push(
+      db.collection(name).bulkWrite(
+        docs.map((d) => ({
+          replaceOne: { filter: { id: d.id }, replacement: { ...d, _id: d.id as any }, upsert: true },
+        })),
+        { ordered: false }
+      )
     );
   }
-  // remove documents that were deleted in the app
-  await db.collection(name).deleteMany({ _id: { $nin: ids as any[] } });
+  tasks.push(db.collection(name).deleteMany({ _id: { $nin: ids as any[] } }));
+  await Promise.all(tasks);
 }
 
-// Push all local data into MongoDB (useful on initial connection or manual sync)
+// Push a single collection to MongoDB asynchronously
+export async function pushCollectionToMongo(name: string, docs: any[]): Promise<boolean> {
+  if (!isConnected || !db) return false;
+  try {
+    await syncCollection(name, docs);
+    return true;
+  } catch (err) {
+    console.error(`[MongoDB] Error syncing collection ${name}:`, err);
+    return false;
+  }
+}
+
+// Push all local data into MongoDB concurrently (useful on initial connection or manual sync)
 export async function pushAllToMongo(schema: DatabaseSchema): Promise<boolean> {
   if (!isConnected || !db) return false;
 
   try {
-    await syncCollection('products', schema.products || []);
-    await syncCollection('users', schema.users || []);
-    await syncCollection('sales', schema.sales || []);
-    await syncCollection('stock_transactions', schema.stockTransactions || []);
-    await syncCollection('payments', schema.payments || []);
-    await syncCollection('notifications', schema.notifications || []);
-    await syncCollection('logs', schema.logs || []);
+    await Promise.all([
+      syncCollection('products', schema.products || []),
+      syncCollection('users', schema.users || []),
+      syncCollection('sales', schema.sales || []),
+      syncCollection('stock_transactions', schema.stockTransactions || []),
+      syncCollection('payments', schema.payments || []),
+      syncCollection('notifications', schema.notifications || []),
+      syncCollection('logs', schema.logs || []),
+      schema.settings
+        ? db.collection('settings').replaceOne(
+            { _id: 'global_settings' as any },
+            { ...schema.settings, _id: 'global_settings' as any },
+            { upsert: true }
+          )
+        : Promise.resolve(),
+    ]);
 
-    // Settings
-    if (schema.settings) {
-      await db.collection('settings').replaceOne(
-        { _id: 'global_settings' as any },
-        { ...schema.settings, _id: 'global_settings' as any },
-        { upsert: true }
-      );
-    }
-
-    console.log('[MongoDB] All collections synced to MongoDB Cloud successfully.');
     return true;
   } catch (err) {
     console.error('[MongoDB] Error pushing state to MongoDB:', err);

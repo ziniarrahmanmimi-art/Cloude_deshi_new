@@ -100,7 +100,7 @@
       "wholesalePriceKg": null,
       "wholesalePricePcs": 8,
       "stockKg": 0,
-      "stockPcs": 56,
+      "stockPcs": 46,
       "lowStockThresholdKg": 0,
       "lowStockThresholdPcs": 15,
       "active": true,
@@ -122,7 +122,7 @@
     {
       "id": "PROD-1010",
       "name": "Kolija Singara",
-      "retailPriceKg": null,
+      "retailPriceKg": 400,
       "retailPricePcs": null,
       "wholesalePriceKg": 370,
       "wholesalePricePcs": null,
@@ -130,7 +130,8 @@
       "stockPcs": 0,
       "lowStockThresholdKg": 0.5,
       "lowStockThresholdPcs": 10,
-      "active": true
+      "active": true,
+      "updatedAt": "1 October 2026"
     },
     {
       "id": "PROD-1011",
@@ -143,8 +144,22 @@
       "stockPcs": 0,
       "lowStockThresholdKg": 0.5,
       "lowStockThresholdPcs": 10,
-      "active": false,
-      "updatedAt": "23 September 2026"
+      "active": true,
+      "updatedAt": "1 October 2026"
+    },
+    {
+      "id": "PROD-1790868520011",
+      "name": "Sausage",
+      "retailPriceKg": 800,
+      "retailPricePcs": null,
+      "wholesalePriceKg": 750,
+      "wholesalePricePcs": null,
+      "stockKg": 2,
+      "stockPcs": 0,
+      "lowStockThresholdKg": 0.5,
+      "lowStockThresholdPcs": 20,
+      "active": true,
+      "updatedAt": "1 October 2026"
     }
   ],
   "users": [
@@ -169,15 +184,147 @@
       "passwordHash": "123456",
       "role": "AGENT",
       "status": "ACTIVE",
-      "totalSales": 0,
+      "totalSales": 550,
       "totalPaid": 0,
-      "currentDue": 0,
+      "currentDue": 550,
       "address": "",
       "joinedDate": "17 September 2026"
+    },
+    {
+      "id": "AGENT-1790868258727",
+      "name": "Nahid",
+      "phone": "01710007808",
+      "passwordHash": "02369",
+      "role": "AGENT",
+      "status": "ACTIVE",
+      "totalSales": 100,
+      "totalPaid": 0,
+      "currentDue": 100,
+      "address": "",
+      "joinedDate": "1 October 2026"
     }
   ],
-  "sales": [],
+  "sales": [
+    {
+      "id": "SALE-1790870738529-2",
+      "invoiceNo": "DB-20261001-00002",
+      "agentId": "AGENT-1790868258727",
+      "agentName": "Nahid",
+      "customerName": "Direct Customer",
+      "customerPhone": "",
+      "customerAddress": "",
+      "saleType": "RETAIL",
+      "items": [
+        {
+          "productId": "PROD-1008",
+          "productName": "Dal Puri",
+          "unit": "PCS",
+          "quantity": 10,
+          "unitPrice": 10,
+          "subtotal": 100
+        }
+      ],
+      "subtotal": 100,
+      "discount": 0,
+      "grandTotal": 100,
+      "paymentStatus": "UNPAID",
+      "createdAtDate": "1 October 2026",
+      "createdAtTime": "10:05 PM",
+      "timestamp": 1790870738385
+    },
+    {
+      "id": "SALE-1790866240753-1",
+      "invoiceNo": "DB-20261001-00001",
+      "agentId": "AGENT-0003",
+      "agentName": "Toha Jamil",
+      "customerName": "Direct Customer",
+      "customerPhone": "",
+      "customerAddress": "",
+      "saleType": "RETAIL",
+      "items": [
+        {
+          "productId": "PROD-1004",
+          "productName": "Half Moon",
+          "unit": "KG",
+          "quantity": 1,
+          "unitPrice": 550,
+          "subtotal": 550
+        }
+      ],
+      "subtotal": 550,
+      "discount": 0,
+      "grandTotal": 550,
+      "paymentStatus": "UNPAID",
+      "createdAtDate": "1 October 2026",
+      "createdAtTime": "08:50 PM",
+      "timestamp": 1790866240295
+    }
+  ],
   "stockTransactions": [
+    {
+      "id": "STX-SALE-1790870738529-2-0",
+      "productId": "PROD-1008",
+      "productName": "Dal Puri",
+      "type": "SALE_OUT",
+      "quantity": 10,
+      "unit": "PCS",
+      "referenceNote": "Deducted via Sale DB-20261001-00002",
+      "recordedBy": "Nahid",
+      "date": "1 October 2026",
+      "time": "10:05 PM",
+      "createdAtDate": "1 October 2026",
+      "createdAtTime": "10:05 PM",
+      "timestamp": 1790870738385,
+      "stockBefore": 56,
+      "stockAfter": 46
+    },
+    {
+      "id": "STX-INIT-PROD-1790868520011",
+      "productId": "PROD-1790868520011",
+      "productName": "Sausage",
+      "type": "INITIAL",
+      "quantity": 2,
+      "unit": "KG",
+      "referenceNote": "Initial stock on product creation",
+      "recordedBy": "Admin Manager",
+      "date": "1 October 2026",
+      "time": "09:28 PM",
+      "timestamp": 1790868521080
+    },
+    {
+      "id": "STX-SALE-1790866240753-1-0",
+      "productId": "PROD-1004",
+      "productName": "Half Moon",
+      "type": "SALE_OUT",
+      "quantity": 1,
+      "unit": "KG",
+      "referenceNote": "Deducted via Sale DB-20261001-00001",
+      "recordedBy": "Toha Jamil",
+      "date": "1 October 2026",
+      "time": "08:50 PM",
+      "createdAtDate": "1 October 2026",
+      "createdAtTime": "08:50 PM",
+      "timestamp": 1790866240295,
+      "stockBefore": 12,
+      "stockAfter": 11
+    },
+    {
+      "id": "STX-1790864490507-232",
+      "productId": "PROD-1001",
+      "productName": "Chicken Samosa",
+      "type": "SALE_OUT",
+      "quantity": 0.5,
+      "unit": "KG",
+      "referenceNote": "Deducted via Sale DB-20261001-00002",
+      "recordedBy": "Toha Jamil",
+      "date": "1 October 2026",
+      "time": "08:21 PM",
+      "createdAtDate": "1 October 2026",
+      "createdAtTime": "08:21 PM",
+      "timestamp": 1790864490506,
+      "stockBefore": 2.5,
+      "stockAfter": 2
+    },
     {
       "id": "STX-1790695808123",
       "productId": "PROD-1012",
@@ -196,6 +343,28 @@
   ],
   "payments": [],
   "notifications": [
+    {
+      "id": "NOTIF-1790868258756",
+      "title": "New Agent Registration Pending",
+      "message": "Nahid (01710007808) has applied for an agent account.",
+      "type": "INFO",
+      "isRead": true,
+      "date": "1 October 2026",
+      "time": "09:24 PM",
+      "targetRole": "ADMIN",
+      "timestamp": 1790868258727
+    },
+    {
+      "id": "NOTIF-1790862115894",
+      "title": "New Agent Registration Pending",
+      "message": "KABIR (01710007808) has applied for an agent account.",
+      "type": "INFO",
+      "isRead": true,
+      "date": "1 October 2026",
+      "time": "07:41 PM",
+      "targetRole": "ADMIN",
+      "timestamp": 1790862115893
+    },
     {
       "id": "NOTIF-1790170760297",
       "title": "Payment Received & Due Updated",
@@ -255,6 +424,72 @@
     }
   ],
   "logs": [
+    {
+      "id": "LOG-1790870738409",
+      "user": "Nahid",
+      "role": "AGENT",
+      "action": "Sale Created",
+      "referenceId": "DB-20261001-00002",
+      "details": "Sold 1 items to Direct Customer for ৳100. Added to Agent Due.",
+      "date": "1 October 2026",
+      "time": "10:05 PM",
+      "timestamp": 1790870738385
+    },
+    {
+      "id": "LOG-1790868564260",
+      "user": "Admin Manager",
+      "role": "ADMIN",
+      "action": "Product Updated",
+      "referenceId": "PROD-1010",
+      "details": "Updated details/pricing for \"Kolija Singara\"",
+      "date": "1 October 2026",
+      "time": "09:29 PM",
+      "timestamp": 1790868564259
+    },
+    {
+      "id": "LOG-1790868537095",
+      "user": "Admin Manager",
+      "role": "ADMIN",
+      "action": "Product Updated",
+      "referenceId": "PROD-1011",
+      "details": "Updated details/pricing for \"Borfi\"",
+      "date": "1 October 2026",
+      "time": "09:28 PM",
+      "timestamp": 1790868537068
+    },
+    {
+      "id": "LOG-1790868521112",
+      "user": "Admin Manager",
+      "role": "ADMIN",
+      "action": "Product Added",
+      "referenceId": "PROD-1790868520011",
+      "details": "Created product \"Sausage\"",
+      "date": "1 October 2026",
+      "time": "09:28 PM",
+      "timestamp": 1790868521080
+    },
+    {
+      "id": "LOG-1790868421740",
+      "user": "Admin Manager",
+      "role": "ADMIN",
+      "action": "Agent Status Updated to ACTIVE",
+      "referenceId": "AGENT-1790868258727",
+      "details": "Nahid status updated to ACTIVE",
+      "date": "1 October 2026",
+      "time": "09:27 PM",
+      "timestamp": 1790868421738
+    },
+    {
+      "id": "LOG-1790868258756",
+      "user": "Nahid",
+      "role": "AGENT",
+      "action": "Agent Registered (Pending)",
+      "referenceId": "AGENT-1790868258727",
+      "details": "New registration with phone 01710007808",
+      "date": "1 October 2026",
+      "time": "09:24 PM",
+      "timestamp": 1790868258727
+    },
     {
       "id": "LOG-1790867786748",
       "user": "Admin Manager",
