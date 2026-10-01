@@ -36,7 +36,7 @@ export const DashboardView: React.FC = () => {
 
   // Relevant sales
   const relevantSales = isAdmin ? sales : sales.filter((s) => s.agentId === currentUser?.id);
-  const recentSales = [...relevantSales].slice(0, 5);
+  const recentSales = [...relevantSales].slice(0, 3);
 
   // Pending agents for Admin
   const pendingAgents = users.filter((u) => u.role === 'AGENT' && u.status === 'PENDING');
@@ -226,9 +226,9 @@ export const DashboardView: React.FC = () => {
           </div>
           <button
             onClick={() => setActiveTab('sales')}
-            className="text-xs font-bold text-purple-700 hover:text-purple-900 flex items-center gap-1 cursor-pointer shrink-0"
+            className="text-xs font-bold text-purple-700 hover:text-purple-900 flex items-center gap-1 cursor-pointer shrink-0 transition-colors"
           >
-            <span>View All Sales</span>
+            <span>See All</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -341,6 +341,21 @@ export const DashboardView: React.FC = () => {
                 </tbody>
               </table>
             </div>
+
+            {relevantSales.length > 3 && (
+              <div className="mt-4 pt-3.5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2">
+                <span className="text-xs text-slate-500 font-medium">
+                  Showing 3 of {relevantSales.length} total invoices
+                </span>
+                <button
+                  onClick={() => setActiveTab('sales')}
+                  className="w-full sm:w-auto px-4 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-purple-200"
+                >
+                  <span>See All ({relevantSales.length}) Invoices</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>
