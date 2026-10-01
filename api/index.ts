@@ -17,7 +17,9 @@ function normalizeUrl(req: Request) {
 
     const matchedPath = (req.headers['x-matched-path'] as string) || '';
     if (matchedPath && matchedPath.startsWith('/api') && matchedPath !== '/api' && matchedPath !== '/api/') {
-      req.url = matchedPath;
+      const searchIndex = rawUrl.indexOf('?');
+      const search = searchIndex !== -1 ? rawUrl.substring(searchIndex) : '';
+      req.url = matchedPath.includes('?') ? matchedPath : `${matchedPath}${search}`;
       return;
     }
 

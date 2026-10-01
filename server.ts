@@ -307,7 +307,15 @@ export async function createExpressApp() {
       const turn = queue;
       let release!: () => void;
       queue = new Promise<void>((r) => (release = r));
-      res.on('close', release);
+      let released = false;
+      const doRelease = () => {
+        if (!released) {
+          released = true;
+          release();
+        }
+      };
+      res.on('finish', doRelease);
+      res.on('close', doRelease);
 
       turn
         .then(async () => {

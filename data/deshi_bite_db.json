@@ -34,7 +34,7 @@
       "retailPricePcs": null,
       "wholesalePriceKg": 760,
       "wholesalePricePcs": null,
-      "stockKg": 18,
+      "stockKg": 17,
       "stockPcs": 0,
       "lowStockThresholdKg": 0.5,
       "lowStockThresholdPcs": 10,
@@ -47,7 +47,7 @@
       "retailPricePcs": null,
       "wholesalePriceKg": null,
       "wholesalePricePcs": null,
-      "stockKg": 12,
+      "stockKg": 11,
       "stockPcs": 0,
       "lowStockThresholdKg": 0.5,
       "lowStockThresholdPcs": 10,
@@ -87,7 +87,7 @@
       "wholesalePriceKg": null,
       "wholesalePricePcs": 12,
       "stockKg": 0,
-      "stockPcs": 220,
+      "stockPcs": 210,
       "lowStockThresholdKg": 0.5,
       "lowStockThresholdPcs": 20,
       "active": true
@@ -100,7 +100,7 @@
       "wholesalePriceKg": null,
       "wholesalePricePcs": 8,
       "stockKg": 0,
-      "stockPcs": 66,
+      "stockPcs": 56,
       "lowStockThresholdKg": 0,
       "lowStockThresholdPcs": 15,
       "active": true,
@@ -145,20 +145,6 @@
       "lowStockThresholdPcs": 10,
       "active": false,
       "updatedAt": "23 September 2026"
-    },
-    {
-      "id": "PROD-1012",
-      "name": "Special Testing Pickle 500g",
-      "retailPriceKg": null,
-      "retailPricePcs": 250,
-      "wholesalePriceKg": null,
-      "wholesalePricePcs": null,
-      "stockKg": 0,
-      "stockPcs": 48,
-      "lowStockThresholdKg": 0.5,
-      "lowStockThresholdPcs": 20,
-      "active": true,
-      "updatedAt": "29 September 2026"
     }
   ],
   "users": [
@@ -269,6 +255,171 @@
     }
   ],
   "logs": [
+    {
+      "id": "LOG-1790867786748",
+      "user": "Admin Manager",
+      "role": "ADMIN",
+      "action": "Product Deleted",
+      "referenceId": "PROD-1790867774754",
+      "details": "Deleted product \"fazil\" (PROD-1790867774754)",
+      "date": "1 October 2026",
+      "time": "09:16 PM",
+      "timestamp": 1790867786748
+    },
+    {
+      "id": "LOG-1790867774277",
+      "user": "Admin Manager",
+      "role": "ADMIN",
+      "action": "Product Added",
+      "referenceId": "PROD-1790867774754",
+      "details": "Created product \"fazil\"",
+      "date": "1 October 2026",
+      "time": "09:16 PM",
+      "timestamp": 1790867774276
+    },
+    {
+      "id": "LOG-1790867613487",
+      "user": "Admin Manager",
+      "role": "ADMIN",
+      "action": "Agent Application Rejected",
+      "referenceId": "AGENT-0002",
+      "details": "KABIR (01710007808) registration was rejected and removed from system",
+      "date": "1 October 2026",
+      "time": "09:13 PM",
+      "timestamp": 1790867613485
+    },
+    {
+      "id": "LOG-1790866240296",
+      "user": "Toha Jamil",
+      "role": "AGENT",
+      "action": "Sale Created",
+      "referenceId": "DB-20261001-00001",
+      "details": "Sold 1 items to Direct Customer for ৳550. Added to Agent Due.",
+      "date": "1 October 2026",
+      "time": "08:50 PM",
+      "timestamp": 1790866240295
+    },
+    {
+      "id": "LOG-1790864565496",
+      "user": "KABIR",
+      "role": "AGENT",
+      "action": "Sale Created",
+      "referenceId": "DB-20261001-00005",
+      "details": "Sold 1 items to Direct Customer for ৳800. Added to Agent Due.",
+      "date": "1 October 2026",
+      "time": "08:22 PM",
+      "timestamp": 1790864565496
+    },
+    {
+      "id": "LOG-1790864029581",
+      "user": "KABIR",
+      "role": "AGENT",
+      "action": "Sale Created",
+      "referenceId": "DB-20261001-00003",
+      "details": "Sold 1 items to Direct Customer for ৳700. Added to Agent Due.",
+      "date": "1 October 2026",
+      "time": "08:13 PM",
+      "timestamp": 1790864029581
+    },
+    {
+      "id": "LOG-1790864006816",
+      "user": "KABIR",
+      "role": "AGENT",
+      "action": "Sale Created",
+      "referenceId": "DB-20261001-00002",
+      "details": "Sold 1 items to Direct Customer for ৳200. Added to Agent Due.",
+      "date": "1 October 2026",
+      "time": "08:13 PM",
+      "timestamp": 1790864006816
+    },
+    {
+      "id": "LOG-1790863909969",
+      "user": "KABIR",
+      "role": "AGENT",
+      "action": "Sale Created",
+      "referenceId": "DB-20261001-00001",
+      "details": "Sold 1 items to Direct Customer for ৳150. Added to Agent Due.",
+      "date": "1 October 2026",
+      "time": "08:11 PM",
+      "timestamp": 1790863909968
+    },
+    {
+      "id": "LOG-1790863835816",
+      "user": "Admin Manager",
+      "role": "ADMIN",
+      "action": "Product Deleted",
+      "referenceId": "PROD-1013",
+      "details": "Deleted product \"murimi\" (PROD-1013)",
+      "date": "1 October 2026",
+      "time": "08:10 PM",
+      "timestamp": 1790863835815
+    },
+    {
+      "id": "LOG-1790863829734",
+      "user": "Admin Manager",
+      "role": "ADMIN",
+      "action": "Product Deleted",
+      "referenceId": "PROD-1012",
+      "details": "Deleted product \"Special Testing Pickle 500g\" (PROD-1012)",
+      "date": "1 October 2026",
+      "time": "08:10 PM",
+      "timestamp": 1790863829734
+    },
+    {
+      "id": "LOG-1790863818670",
+      "user": "Admin Manager",
+      "role": "ADMIN",
+      "action": "Product Added",
+      "referenceId": "PROD-1013",
+      "details": "Created product \"murimi\"",
+      "date": "1 October 2026",
+      "time": "08:10 PM",
+      "timestamp": 1790863818669
+    },
+    {
+      "id": "LOG-1790862477939",
+      "user": "KABIR",
+      "role": "AGENT",
+      "action": "Sale Created",
+      "referenceId": "DB-20261001-00002",
+      "details": "Sold 1 items to Direct Customer for ৳150. Added to Agent Due.",
+      "date": "1 October 2026",
+      "time": "07:47 PM",
+      "timestamp": 1790862477939
+    },
+    {
+      "id": "LOG-1790862398658",
+      "user": "KABIR",
+      "role": "AGENT",
+      "action": "Sale Created",
+      "referenceId": "DB-20261001-00001",
+      "details": "Sold 1 items to Direct Customer for ৳100. Added to Agent Due.",
+      "date": "1 October 2026",
+      "time": "07:46 PM",
+      "timestamp": 1790862398658
+    },
+    {
+      "id": "LOG-1790862230486",
+      "user": "Admin Manager",
+      "role": "ADMIN",
+      "action": "Agent Status Updated to ACTIVE",
+      "referenceId": "AGENT-0002",
+      "details": "KABIR status updated to ACTIVE",
+      "date": "1 October 2026",
+      "time": "07:43 PM",
+      "timestamp": 1790862230486
+    },
+    {
+      "id": "LOG-1790862115894",
+      "user": "KABIR",
+      "role": "AGENT",
+      "action": "Agent Registered (Pending)",
+      "referenceId": "AGENT-0002",
+      "details": "New registration with phone 01710007808",
+      "date": "1 October 2026",
+      "time": "07:41 PM",
+      "timestamp": 1790862115893
+    },
     {
       "id": "LOG-1790695808127",
       "user": "Toha Jamil",
